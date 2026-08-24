@@ -12,8 +12,6 @@ app.use(express.json());
 
 app.use("/api/admin/clues", clueRoutes);
 app.use("/api/admin/questions", questionRoutes);
-app.use("/api/admin/suspects", suspectsRouter)
-
 const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
