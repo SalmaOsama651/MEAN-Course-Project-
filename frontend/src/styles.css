@@ -1,3 +1,38 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@theme {
+    /* ألوان التيلويند التلقائية */
+    --color-detective-bg: #0f1115;
+    --color-detective-card: #181b20;
+    --color-detective-card-hover: #22262e;
+    --color-detective-border: #2d323b;
+
+    --color-detective-red: #e6392a;
+    --color-detective-red-hover: #ff4d3d;
+    --color-detective-dark-red: #801c1c;
+    --color-detective-dark-red-hover: #9c2424;
+
+    --color-detective-green: #22c55e;
+    --color-detective-gold: #eab308;
+
+    --color-detective-text: #f3f4f6;
+    --color-detective-muted: #9ca3af;
+    --color-detective-faded: #4b5563;
+}
+
+:root {
+    /* الظلال والتأثيرات النيون/السينمائية */
+    --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    --red-glow-shadow: 0 0 15px rgba(230, 57, 42, 0.4);
+    --green-glow-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+    --border-radius-card: 10px;
+    --border-radius-btn: 6px;
+}
+
+body {
+    background-color: var(--color-detective-bg);
+    color: var(--color-detective-text);
+}
