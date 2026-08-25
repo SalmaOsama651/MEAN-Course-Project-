@@ -36,6 +36,12 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  solvedCases: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Case",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Users", userSchema);

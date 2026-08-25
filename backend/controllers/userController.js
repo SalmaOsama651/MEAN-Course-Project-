@@ -1,10 +1,11 @@
-// باقي ال GameSession >> getProfile
-
 const User = require("../models/User");
+const Case = require("../models/case");
 
 const getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId).select("-password");
+    const user = await User.findById(req.user.userId)
+      .select("-password")
+      .populate("solvedCases");
 
     if (!user) {
       return res.status(404).json({
@@ -12,10 +13,28 @@ const getProfile = async (req, res) => {
       });
     }
 
-    res.json({
-      user,
+    const rank =
+      (await User.countDocuments({
+        totalScore: {
+          $gt: user.totalScore,
+        },
+      })) + 1;
+
+    res.status(200).json({
+      message: "Profile retrieved successfully",
+      profile: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        totalScore: user.totalScore,
+        rank: rank,
+        solvedCases: user.solvedCases,
+        createdAt: user.createdAt,
+      },
     });
   } catch (error) {
+    console.error("Get profile error:", error);
     res.status(500).json({
       message: "Server error",
       error: error.message,
