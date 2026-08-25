@@ -3,8 +3,8 @@ const GameSession = require('../models/GameSession');
 const Question = require('../models/Question'); 
 const Case = require('../models/Case');       
 const User = require('../models/User');
-
 //recording the start of the game
+
 
 exports.startGame = async (userId, caseId) => {
   const newSession = new GameSession({
@@ -28,7 +28,7 @@ exports.unlockNextClue = async (sessionId, userId) => {
 
 //finsh the game and record the end time, total score, and time taken
 
-exports.finishGame = async (sessionId, userId, userAnswers) => {
+exports.finishGame = async (sessionId, userId, userAnswers , clientTimeTakenSeconds = null) => {
   const session = await GameSession.findOne({ _id: sessionId, userId, isCompleted: false });
   if (!session) throw new Error('The session does not exist or has already ended.');
 
@@ -38,7 +38,12 @@ exports.finishGame = async (sessionId, userId, userAnswers) => {
 
   // calculate time taken seconds
   const endTime = new Date();
-  const timeTakenSeconds = Math.round((endTime - new Date(session.startTime)) / 1000);
+  let finalTimeTakenSeconds;
+if (clientTimeTakenSeconds !== null && clientTimeTakenSeconds !== undefined) {
+  finalTimeTakenSeconds = Number(clientTimeTakenSeconds);
+} else {
+  finalTimeTakenSeconds = Math.round((endTime - new Date(session.startTime)) / 1000);
+}
 
   // compare answers and calculate score
   let earnedScore = 0;
@@ -63,7 +68,7 @@ exports.finishGame = async (sessionId, userId, userAnswers) => {
 
   // update the session 
   session.endTime = endTime;
-  session.timeTakenSeconds = timeTakenSeconds;
+  session.timeTakenSeconds = finalTimeTakenSeconds;
   session.totalScore = earnedScore;
   session.answers = userAnswers;
   session.isCompleted = true;
@@ -77,7 +82,7 @@ exports.finishGame = async (sessionId, userId, userAnswers) => {
 
   return {
     totalScore: earnedScore,
-    timeTakenSeconds,
+    timeTakenSeconds: finalTimeTakenSeconds,
     detailedAnswers,
     fullSolutionStory: caseData.fullSolutionStory
   };

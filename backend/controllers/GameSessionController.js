@@ -22,8 +22,8 @@ exports.unlockNextClue = async (req, res) => {
 
 exports.finish = async (req, res) => {
   try {
-    const { sessionId, answers } = req.body;
-    const result = await gameSessionService.finishGame(sessionId, req.user.id, answers);
+    const { sessionId, answers , timeTakenSeconds } = req.body;
+    const result = await gameSessionService.finishGame(sessionId, req.user.id, answers , timeTakenSeconds);
     res.status(200).json({ success: true, data: result });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
