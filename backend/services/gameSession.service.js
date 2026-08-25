@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
-const GameSession = require('../models/GameSession');
-const Question = require('../models/Question'); 
-const Case = require('../models/Case');       
-const User = require('../models/User');
+const GameSession = require('../models/GameSession.js');
+const Question = require('../models/question.model.js');
+const Case = require('../models/cases.models.js');
+const User = require('../models/User.js');
 //recording the start of the game
 
 
@@ -28,7 +28,7 @@ exports.unlockNextClue = async (sessionId, userId) => {
 
 //finsh the game and record the end time, total score, and time taken
 
-exports.finishGame = async (sessionId, userId, userAnswers , clientTimeTakenSeconds = null) => {
+exports.finishGame = async (sessionId, userId, userAnswers, clientTimeTakenSeconds = null) => {
   const session = await GameSession.findOne({ _id: sessionId, userId, isCompleted: false });
   if (!session) throw new Error('The session does not exist or has already ended.');
 
@@ -39,11 +39,11 @@ exports.finishGame = async (sessionId, userId, userAnswers , clientTimeTakenSeco
   // calculate time taken seconds
   const endTime = new Date();
   let finalTimeTakenSeconds;
-if (clientTimeTakenSeconds !== null && clientTimeTakenSeconds !== undefined) {
-  finalTimeTakenSeconds = Number(clientTimeTakenSeconds);
-} else {
-  finalTimeTakenSeconds = Math.round((endTime - new Date(session.startTime)) / 1000);
-}
+  if (clientTimeTakenSeconds !== null && clientTimeTakenSeconds !== undefined) {
+    finalTimeTakenSeconds = Number(clientTimeTakenSeconds);
+  } else {
+    finalTimeTakenSeconds = Math.round((endTime - new Date(session.startTime)) / 1000);
+  }
 
   // compare answers and calculate score
   let earnedScore = 0;
@@ -54,7 +54,7 @@ if (clientTimeTakenSeconds !== null && clientTimeTakenSeconds !== undefined) {
     const isCorrect = userAnswerObj && userAnswerObj.selectedAnswer === q.correctAnswer;
 
     if (isCorrect) {
-      earnedScore += (q.points || 25 );
+      earnedScore += (q.points || 25);
     }
 
     detailedAnswers.push({
