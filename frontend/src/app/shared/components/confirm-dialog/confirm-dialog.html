@@ -1,0 +1,46 @@
+@if (isOpen) {
+<!-- Backdrop -->
+<div class="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm" (click)="onCancel()"></div>
+
+<!-- Dialog Container -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true"
+  [attr.aria-labelledby]="'confirm-dialog-title'">
+  <div
+    class="w-full max-w-md overflow-hidden rounded-[var(--border-radius-card)] border border-detective-border bg-detective-card shadow-[var(--card-shadow)]"
+    (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-detective-border px-6 py-4">
+      <h2 id="confirm-dialog-title" class="text-lg font-semibold text-detective-text">
+        ⚠️ {{ title }}
+      </h2>
+
+      <button type="button" class="text-2xl leading-none text-detective-muted transition hover:text-detective-text"
+        aria-label="Close" (click)="onCancel()">
+        ×
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="px-6 py-6">
+      <p class="text-sm leading-6 text-detective-muted">
+        {{ message }}
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex justify-end gap-3 border-t border-detective-border px-6 py-4">
+      <button type="button"
+        class="rounded-[var(--border-radius-btn)] border border-detective-border bg-detective-card-hover px-4 py-2 text-sm font-medium text-detective-text transition hover:bg-detective-border"
+        (click)="onCancel()">
+        Cancel
+      </button>
+
+      <button type="button"
+        class="rounded-[var(--border-radius-btn)] bg-detective-red px-4 py-2 text-sm font-medium text-white shadow-[var(--red-glow-shadow)] transition hover:bg-detective-red-hover"
+        (click)="onConfirm()">
+        Confirm
+      </button>
+    </div>
+  </div>
+</div>
+}

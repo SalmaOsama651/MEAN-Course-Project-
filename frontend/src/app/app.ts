@@ -1,12 +1,18 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
+import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
+import { PaginationComponent } from './shared/components/pagination/pagination';
+
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
-  styleUrl: './app.css',
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    SidebarComponent,
+    PaginationComponent
+  ],
   templateUrl: './app.html',
+  styleUrl: './app.css'
 })
-export class App {
-  protected readonly title = signal('frontend');
-}
+export class App { }
