@@ -1,0 +1,56 @@
+<div class="auth-card">
+  <div class="card-icon">
+    <span *ngIf="mode === 'login'">🛡️</span>
+    <span *ngIf="mode === 'register'">👤<sup>+</sup></span>
+  </div>
+
+  <h1 class="main-title">
+    {{ title }}
+    <div *ngIf="highlightText" class="highlight">{{ highlightText }}</div>
+  </h1>
+  <p *ngIf="subtitle" class="subtitle">{{ subtitle }}</p>
+
+  <form (ngSubmit)="onSubmit()" #authForm="ngForm" class="auth-form">
+    
+   <div class="input-group" *ngIf="mode === 'register'">
+    <span class="input-icon">👤</span>
+    <input type="text" [(ngModel)]="formData.username" name="username" placeholder="Username" autocomplete="off" data-lpignore="true" required />
+  </div>
+
+  <div class="input-group">
+    <span class="input-icon">✉️</span>
+    <input type="email" [(ngModel)]="formData.email" name="email" placeholder="Email" autocomplete="off" data-lpignore="true" required />
+  </div>
+
+  <div class="input-group">
+    <span class="input-icon">🔒</span>
+    <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="formData.password" name="password" placeholder="Password" autocomplete="new-password" data-lpignore="true" required />
+    <span class="eye-icon" (click)="showPassword = !showPassword">👁️</span>
+  </div>
+
+<p *ngIf="errorMessage" class="text-red-500 text-xs mt-1.5 ml-1 text-left font-medium">
+  {{ errorMessage }}
+</p>
+
+    <div class="input-group" *ngIf="mode === 'register'">
+      <span class="input-icon">🔒</span>
+      <input [type]="showConfirmPassword ? 'text' : 'password'" [(ngModel)]="formData.confirmPassword" name="confirmPassword" placeholder="Confirm Password" required />
+      <span class="eye-icon" (click)="showConfirmPassword = !showConfirmPassword">👁️</span>
+    </div>
+
+    <div class="form-options" *ngIf="mode === 'login'">
+      <label class="checkbox-container">
+        <input type="checkbox" [(ngModel)]="formData.rememberMe" name="rememberMe" />
+        <span>Remember me</span>
+      </label>
+      <a href="#" class="forgot-link">Forgot password?</a>
+    </div>
+
+    <button type="submit" class="submit-btn">{{ buttonText }}</button>
+  </form>
+
+  <div class="switch-mode">
+    <span *ngIf="mode === 'login'">Don't have an account? <a (click)="onSwitchMode()">SIGN UP</a></span>
+    <span *ngIf="mode === 'register'">Already have an account? <a (click)="onSwitchMode()">LOGIN</a></span>
+  </div>
+</div>

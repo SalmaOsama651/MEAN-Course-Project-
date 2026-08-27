@@ -1,6 +1,7 @@
 // باقي ال GameSession >> getProfile
 
 const User = require("../models/User");
+const GameSession = require("../models/GameSession");
 
 const getProfile = async (req, res) => {
   try {
@@ -97,4 +98,50 @@ const deleteProfile = async (req, res) => {
   }
 };
 
-module.exports = { getProfile, updateProfile, deleteProfile };
+const getTopDetectives = async (req, res) => {
+  try {
+    // بنجيب أعلى 3 مستخدمين حسب totalScore تنازلياً
+    const topDetectives = await User.find({})
+      .select("username totalScore role")
+      .sort({ totalScore: -1 })
+      .limit(3);
+
+    res.status(200).json(topDetectives);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching top detectives", error: error.message });
+  }
+};
+
+const getLeaderboard = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const leaderboard = await GameSession.find({ isCompleted: true })
+      .populate("userId", "username email")
+      .sort({ totalScore: -1, timeTakenSeconds: 1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.status(200).json({
+      msg: "FETCH LEADERBOARD SUCCESSFULLY",
+      data: leaderboard,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching leaderboard",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = {
+  getProfile,
+  updateProfile,
+  deleteProfile,
+  getTopDetectives,
+  getLeaderboard,
+};

@@ -1,0 +1,151 @@
+<div class="flex min-h-screen bg-[#0c0d10] text-gray-300 font-sans">
+  
+  <!-- Sidebar -->
+  <aside class="w-64 bg-[#090a0c] border-r border-gray-800/60 flex flex-col justify-between p-6">
+    <div class="space-y-8">
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">🕵️</span>
+        <span class="font-bold tracking-wider text-white text-sm">DIGITAL DETECTIVE</span>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="space-y-2 text-sm font-semibold tracking-wider">
+        <a routerLink="/game" routerLinkActive="bg-red-950/40 text-red-500 border-r-2 border-red-500" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white rounded transition">
+          <span>🏠</span> HOME
+        </a>
+        <a routerLink="/cases" routerLinkActive="bg-red-950/40 text-red-500 border-r-2 border-red-500" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white rounded transition">
+          <span>📁</span> CASES
+        </a>
+        <a routerLink="/notes" routerLinkActive="bg-red-950/40 text-red-500 border-r-2 border-red-500" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white rounded transition">
+          <span>📝</span> MY NOTES
+        </a>
+        <a routerLink="/leaderboard" routerLinkActive="bg-red-950/40 text-red-500 border-r-2 border-red-500" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white rounded transition">
+          <span>🏆</span> LEADERBOARD
+        </a>
+        <a routerLink="/profile" routerLinkActive="bg-red-950/40 text-red-500 border-r-2 border-red-500" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white rounded transition">
+          <span>👤</span> PROFILE
+        </a>
+      </nav>
+    </div>
+
+    <!-- Logout -->
+    <button (click)="logout()" class="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-gray-400 hover:text-red-500 transition border-t border-gray-800/60 pt-4">
+      <span>🚪</span> LOG OUT
+    </button>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 p-10 overflow-y-auto">
+    <h1 class="text-2xl font-bold tracking-widest text-white mb-6 uppercase">LEADERBOARD</h1>
+
+    <!-- Tabs -->
+    <div class="flex gap-2 mb-6">
+      <button 
+        (click)="setTab('GLOBAL')"
+        [ngClass]="activeTab === 'GLOBAL' ? 'bg-red-950/80 border-red-700 text-white' : 'bg-gray-900/40 border-gray-800 text-gray-400 hover:text-white'"
+        class="px-8 py-2.5 text-xs font-semibold tracking-wider border rounded transition">
+        GLOBAL
+      </button>
+      <button 
+        (click)="setTab('FRIENDS')"
+        [ngClass]="activeTab === 'FRIENDS' ? 'bg-red-950/80 border-red-700 text-white' : 'bg-gray-900/40 border-gray-800 text-gray-400 hover:text-white'"
+        class="px-8 py-2.5 text-xs font-semibold tracking-wider border rounded transition">
+        FRIENDS
+      </button>
+      <button 
+        (click)="setTab('THIS_MONTH')"
+        [ngClass]="activeTab === 'THIS_MONTH' ? 'bg-red-950/80 border-red-700 text-white' : 'bg-gray-900/40 border-gray-800 text-gray-400 hover:text-white'"
+        class="px-8 py-2.5 text-xs font-semibold tracking-wider border rounded transition">
+        THIS MONTH
+      </button>
+    </div>
+
+
+    <!-- Table Container -->
+    <div class="bg-[#111319] border border-gray-800/80 rounded-lg overflow-hidden shadow-2xl mb-6">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-gray-800/80 text-xs font-semibold tracking-wider text-gray-500 uppercase bg-[#0e0f14]">
+            <th class="py-4 px-6">RANK</th>
+            <th class="py-4 px-6">DETECTIVE</th>
+            <th class="py-4 px-6 text-center">CASES SOLVED</th>
+            <th class="py-4 px-6 text-right">TOTAL SCORE</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-800/40 text-sm">
+@for (detective of detectives; track $index; let i = $index) {
+              <tr class="hover:bg-gray-800/20 transition">
+              <!-- Rank -->
+              <td class="py-3.5 px-6 font-bold">
+                @if ((currentPage - 1) * pageSize + i + 1 === 1) {
+                  <span class="w-7 h-7 rounded-full bg-amber-500/20 text-amber-500 border border-amber-500/50 flex items-center justify-center text-xs">🥇</span>
+                } @else if ((currentPage - 1) * pageSize + i + 1 === 2) {
+                  <span class="w-7 h-7 rounded-full bg-gray-400/20 text-gray-300 border border-gray-400/50 flex items-center justify-center text-xs">🥈</span>
+                } @else if ((currentPage - 1) * pageSize + i + 1 === 3) {
+                  <span class="w-7 h-7 rounded-full bg-amber-800/20 text-amber-600 border border-amber-700/50 flex items-center justify-center text-xs">🥉</span>
+                } @else {
+                  <span class="text-gray-500 px-2">{{ (currentPage - 1) * pageSize + i + 1 }}</span>
+                }
+              </td>
+
+              <!-- Detective Profile -->
+              <td class="py-3.5 px-6 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full overflow-hidden bg-gray-800 border border-gray-700 flex-shrink-0">
+                  <img [src]="defaultAvatar" [alt]="detective.username" class="w-full h-full object-cover" />
+                </div>
+                <span class="font-medium text-white">{{ detective.username }}</span>
+              </td>
+
+              <!-- Cases Solved -->
+              <td class="py-3.5 px-6 text-center text-gray-300 font-semibold">
+                {{ detective.casesSolved || 0 }}
+              </td>
+
+              <!-- Total Score -->
+              <td class="py-3.5 px-6 text-right font-bold text-gray-200">
+                {{ (detective.totalScore || 0) | number }}
+              </td>
+            </tr>
+          }
+
+          @if (detectives.length === 0) {
+            <tr>
+              <td colspan="4" class="py-8 text-center text-gray-500 text-sm">
+                No rankings available yet.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="flex justify-center items-center gap-2">
+      <button 
+        (click)="changePage(currentPage - 1)" 
+        [disabled]="currentPage === 1"
+        class="w-9 h-9 flex items-center justify-center border border-gray-800 rounded bg-[#111319] hover:bg-gray-800 text-gray-400 disabled:opacity-40 disabled:hover:bg-transparent transition text-sm">
+        ←
+      </button>
+
+      @for (page of [1, 2, 3, 4, 5]; track page) {
+        @if (page <= totalPages) {
+          <button 
+            (click)="changePage(page)" 
+            [ngClass]="currentPage === page ? 'bg-red-950/90 border-red-700 text-white font-bold' : 'bg-[#111319] border-gray-800 text-gray-400 hover:text-white'"
+            class="w-9 h-9 border rounded transition text-xs">
+            {{ page }}
+          </button>
+        }
+      }
+
+      <button 
+        (click)="changePage(currentPage + 1)" 
+        [disabled]="currentPage === totalPages"
+        class="w-9 h-9 flex items-center justify-center border border-gray-800 rounded bg-[#111319] hover:bg-gray-800 text-gray-400 disabled:opacity-40 disabled:hover:bg-transparent transition text-sm">
+        →
+      </button>
+    </div>
+  </main>
+</div>

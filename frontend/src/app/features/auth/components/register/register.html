@@ -1,0 +1,16 @@
+<div class="auth-page flex justify-center items-center min-h-screen p-4">
+  <div class="w-full max-w-md">
+    <div *ngIf="errorMessage" class="mb-4 p-3 rounded text-center text-sm font-semibold bg-red-950/80 text-red-300 border border-red-800">
+      {{ errorMessage }}
+    </div>
+
+    <app-auth-header
+      mode="register"
+      title="Create Your Account"
+      subtitle="Join the Detective Agency"
+      buttonText="SIGN UP"
+      (formSubmit)="onRegister($event)"
+      (toggleMode)="goToLogin()">
+    </app-auth-header>
+  </div>
+</div>

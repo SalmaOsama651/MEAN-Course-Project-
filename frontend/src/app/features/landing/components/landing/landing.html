@@ -1,0 +1,119 @@
+<div class="bg-[#0c0d10] text-gray-300 min-h-screen font-sans">
+  
+  <!-- Navbar -->
+  <nav class="flex items-center justify-between px-8 py-5 max-w-7xl mx-auto border-b border-gray-800/50">
+    <div class="flex items-center gap-3">
+      <!-- Hat/Detective Icon -->
+      <span class="text-2xl">🕵️</span>
+      <span class="font-bold tracking-wider text-lg text-white">DIGITAL DETECTIVE</span>
+    </div>
+
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide">
+      <a href="#home" class="text-red-500 border-b-2 border-red-500 pb-1">HOME</a>
+      <a href="#cases" class="hover:text-white transition">CASES</a>
+      <a href="#leaderboard" class="hover:text-white transition">LEADERBOARD</a>
+      <a href="#about" class="hover:text-white transition">ABOUT</a>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <button (click)="goToLogin()" class="px-5 py-2 text-xs font-semibold tracking-wider text-gray-300 border border-gray-700 rounded bg-gray-900/50 hover:bg-gray-800 transition">
+        LOG IN
+      </button>
+      <button (click)="goToRegister()" class="px-5 py-2 text-xs font-semibold tracking-wider text-white bg-red-900/80 hover:bg-red-800 border border-red-700 rounded transition shadow-lg shadow-red-950/50">
+        SIGN UP
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="relative max-w-7xl mx-auto px-8 py-24 min-h-[550px] flex items-center overflow-hidden rounded-xl my-6">
+    
+    <!-- Background Image with Dark Overlay -->
+    <div class="absolute inset-0 z-0">
+      <img src="assets/Dark Detective Alley2.jpg" alt="Detective Background" class="w-full h-full object-cover object-center" />
+
+      <div class="absolute inset-0 bg-gradient-to-r from-[#0c0d10] via-[#0c0d10]/80 to-transparent"></div>
+    </div>
+
+    <!-- Content Over Image -->
+    <div class="relative z-10 space-y-6 max-w-xl">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight drop-shadow-md">
+        UNCOVER THE TRUTH.<br>
+        <span class="text-red-600">SOLVE THE CASE.</span>
+      </h1>
+      <p class="text-gray-300 max-w-md text-sm md:text-base leading-relaxed drop-shadow">
+        Step into the shoes of a detective. Collect clues, analyze evidence, and catch the real criminal.
+      </p>
+      <button (click)="goToLogin()" class="inline-flex items-center gap-3 px-6 py-3.5 bg-gradient-to-r from-red-950 to-red-900 hover:from-red-900 hover:to-red-800 border border-red-700/60 rounded text-white font-semibold text-sm tracking-wider transition shadow-lg shadow-red-950/80">
+        START INVESTIGATING <span>→</span>
+      </button>
+    </div>
+
+  </section>
+
+  <!-- How To Play Section -->
+  <section class="max-w-7xl mx-auto px-8 py-12 border-t border-gray-800/40">
+    <h2 class="text-center text-sm font-bold tracking-widest text-red-500 mb-10 uppercase">HOW TO PLAY</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+      <div class="p-4 flex flex-col items-center">
+        <div class="text-3xl mb-3 text-red-500">📁</div>
+        <h3 class="font-bold text-white text-sm tracking-wide mb-1">1. CHOOSE A CASE</h3>
+        <p class="text-xs text-gray-400 max-w-xs">Pick a case from the list and read the briefing.</p>
+      </div>
+
+      <div class="p-4 flex flex-col items-center">
+        <div class="text-3xl mb-3 text-red-500">🔍</div>
+        <h3 class="font-bold text-white text-sm tracking-wide mb-1">2. COLLECT CLUES</h3>
+        <p class="text-xs text-gray-400 max-w-xs">Explore evidence and interrogate suspects.</p>
+      </div>
+
+      <div class="p-4 flex flex-col items-center">
+        <div class="text-3xl mb-3 text-red-500">👤</div>
+        <h3 class="font-bold text-white text-sm tracking-wide mb-1">3. MAKE AN ACCUSATION</h3>
+        <p class="text-xs text-gray-400 max-w-xs">Answer the final questions and submit your report.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Top 3 Detectives Section -->
+  <section id="leaderboard" class="max-w-7xl mx-auto px-8 py-12 border-t border-gray-800/40 text-center">
+    <h2 class="text-sm font-bold tracking-widest text-red-500 mb-8 uppercase">TOP 3 DETECTIVES</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-8">
+      
+      @for (detective of topDetectives; track detective.username; let i = $index) {
+        <div class="bg-[#13151b] border border-gray-800 p-4 rounded-lg flex items-center gap-4 shadow-lg">
+          <!-- الترتيب 1, 2, 3 -->
+          <span class="text-2xl font-bold text-gray-500">{{ i + 1 }}</span>
+          
+          <!-- الصورة -->
+          <div class="w-14 h-14 rounded-full border-2 overflow-hidden bg-gray-800 flex-shrink-0"
+               [ngClass]="{
+                 'border-amber-600/60': i === 0,
+                 'border-gray-500/60': i === 1,
+                 'border-amber-800/60': i === 2
+               }">
+            <img [src]="defaultAvatars[i]" [alt]="detective.username" class="w-full h-full object-cover" />
+          </div>
+
+          <!-- بيانات المحقق -->
+          <div class="text-left">
+            <h4 class="font-bold text-white text-sm">{{ detective.username }}</h4>
+            <p class="text-xs text-amber-500 font-semibold">★ {{ detective.totalScore || 0 }} pts</p>
+          </div>
+        </div>
+      }
+
+      @if (topDetectives.length === 0) {
+        <p class="text-gray-500 text-sm col-span-3">No detectives registered yet.</p>
+      }
+
+    </div>
+
+<button (click)="goToLeaderboard()" class="px-6 py-2.5 text-xs font-semibold tracking-wider text-white bg-red-950/80 hover:bg-red-900 border border-red-800 rounded transition">
+  VIEW LEADERBOARD
+</button>
+  </section>
+
+</div>

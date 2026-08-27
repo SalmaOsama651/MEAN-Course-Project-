@@ -1,0 +1,14 @@
+<div class="auth-page flex justify-center items-center min-h-screen p-4">
+  <div class="w-full max-w-md">
+
+    <app-auth-header
+      mode="login"
+      title="Welcome Back,"
+      highlightText="Detective"
+      buttonText="LOG IN"
+      [errorMessage]="errorMessage"
+      (formSubmit)="onLogin($event)"
+      (toggleMode)="goToRegister()">
+    </app-auth-header>
+  </div>
+</div>
