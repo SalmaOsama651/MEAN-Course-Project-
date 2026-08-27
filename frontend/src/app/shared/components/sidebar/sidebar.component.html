@@ -1,0 +1,55 @@
+<aside class="sidebar-container">
+
+  <div>
+    <div class="logo-area" (click)="togglePanel()" title="Click to toggle">
+      <span class="logo-icon">🕵️‍♂️</span>
+
+      <div class="mb-2 text-xs font-bold uppercase tracking-[0.25em] text-detective-red">
+        Digital Detective
+      </div>
+    </div>
+
+    <nav class="nav-menu">
+      <ul>
+
+        <li>
+          <a routerLink="/cases" routerLinkActive="active">
+            <span class="material-symbols-outlined">work</span>
+            CASES
+          </a>
+        </li>
+
+        <li>
+          <a routerLink="/history" routerLinkActive="active">
+            <span class="material-symbols-outlined">history</span>
+            HISTORY
+          </a>
+        </li>
+
+        <li>
+          <a routerLink="/leaderboard" routerLinkActive="active">
+            <span class="material-symbols-outlined">emoji_events</span>
+            LEADERBOARD
+          </a>
+        </li>
+
+        <li>
+          <a routerLink="/profile" routerLinkActive="active">
+            <span class="material-symbols-outlined">person_search</span>
+            PROFILE
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+  </div>
+
+  <div class="logout-area">
+
+    <a href="#" class="logout-link">
+      <span class="material-symbols-outlined">logout</span>
+      LOG OUT
+    </a>
+
+  </div>
+</aside>

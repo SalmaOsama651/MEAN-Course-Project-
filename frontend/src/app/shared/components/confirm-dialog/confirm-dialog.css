@@ -1,0 +1,118 @@
+.confirm-backdrop {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.75);
+
+    z-index: 2100;
+
+    backdrop-filter: blur(3px);
+}
+
+.confirm-dialog {
+    width: min(420px, 100%);
+
+    padding: 24px;
+
+    background-color: var(--color-detective-card);
+
+    border: 1px solid var(--color-detective-border);
+
+    border-radius: var(--border-radius-card);
+
+    box-shadow: var(--card-shadow);
+
+    text-align: center;
+}
+
+.confirm-icon {
+    width: 48px;
+    height: 48px;
+
+    margin: 0 auto 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(230, 57, 42, 0.1);
+
+    color: var(--color-detective-red);
+
+    border: 1px solid rgba(230, 57, 42, 0.25);
+
+    border-radius: 50%;
+
+    font-size: 20px;
+}
+
+.confirm-title {
+    margin: 0 0 8px;
+
+    color: var(--color-detective-text);
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.confirm-message {
+    margin: 0 0 24px;
+
+    color: var(--color-detective-muted);
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.cancel-btn,
+.confirm-btn {
+    min-width: 100px;
+
+    padding: 9px 16px;
+
+    border-radius: var(--border-radius-btn);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.cancel-btn {
+    background-color: transparent;
+
+    color: var(--color-detective-muted);
+
+    border: 1px solid var(--color-detective-border);
+}
+
+.cancel-btn:hover {
+    background-color: var(--color-detective-card-hover);
+    color: var(--color-detective-text);
+}
+
+.confirm-btn {
+    background-color: var(--color-detective-red);
+
+    color: var(--color-detective-text);
+
+    border: 1px solid var(--color-detective-red);
+}
+
+.confirm-btn:hover {
+    background-color: var(--color-detective-red-hover);
+
+    box-shadow: var(--red-glow-shadow);
+}
