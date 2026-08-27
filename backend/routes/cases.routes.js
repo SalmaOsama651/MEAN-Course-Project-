@@ -5,9 +5,10 @@ const caseController = require("../controllers/cases.controller.js");
 router.get("/cases", caseController.getCases);
 router.get("/cases/:id", caseController.getCaseById);
 
+router.get("/:id/details", caseController.getCaseDetails);
+
 router.post("/admin/cases", caseController.createCase);
 router.put("/admin/cases/:id", caseController.updateCase);
 router.delete("/admin/cases/:id", caseController.deleteCase);
 
 module.exports = router;
-

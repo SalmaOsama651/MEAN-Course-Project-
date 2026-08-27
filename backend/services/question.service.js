@@ -30,10 +30,15 @@ const deleteQuestion = async (id) => {
     return question;
 };
 
+const deleteQuestionsByCase = async (caseId) => {
+    return await Question.deleteMany({ caseId });
+};
+
 module.exports = {
     createQuestion,
     createManyQuestions,
     getQuestions,
     updateQuestion,
     deleteQuestion,
+    deleteQuestionsByCase,
 };

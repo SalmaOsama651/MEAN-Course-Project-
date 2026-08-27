@@ -38,6 +38,36 @@ exports.getCaseById = async (req, res) => {
   }
 };
 
+exports.getCaseDetails = async (req, res) => {
+  try {
+    const data = await caseService.getCaseDetails(req.params.id);
+
+    if (!data) {
+      return res.status(404).json({
+        success: false,
+        message: "Case not found"
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: data
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve case details",
+      error: err.message
+    });
+  }
+};
+
+
+
+
+
+
+
 exports.createCase = async (req, res) => {
   try {
     const newCase = await caseService.createCase(req.body);

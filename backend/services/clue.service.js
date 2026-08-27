@@ -30,6 +30,9 @@ const deleteClue = async (id) => {
     return clue;
 };
 
+const deleteCluesByCase = async (caseId) => {
+    return await Clue.deleteMany({ caseId });
+};
 
 module.exports = {
     createClue,
@@ -37,4 +40,5 @@ module.exports = {
     getClues,
     updateClue,
     deleteClue,
+    deleteCluesByCase,
 };

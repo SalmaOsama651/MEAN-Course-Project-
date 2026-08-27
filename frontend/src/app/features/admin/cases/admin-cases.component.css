@@ -1,0 +1,145 @@
+/* =========================================
+   MODERN DETECTIVE - ADMIN CASES
+========================================= */
+
+/* ========== MODAL ANIMATION ========== */
+
+.modal-overlay {
+    animation: overlayFadeIn 0.25s ease-out forwards;
+}
+
+.modal-content {
+    animation: modalFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes overlayFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* ========== CUSTOM SCROLLBAR ========== */
+
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #4b5563 #181b20;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 7px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #181b20;
+    border-radius: 999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 999px;
+    border: 2px solid #181b20;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #e6392a;
+}
+
+
+/* ========== NUMBER INPUT ========== */
+
+.number-input::-webkit-outer-spin-button,
+.number-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+.number-input {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+
+/* ========== CUSTOM SELECT ========== */
+
+.custom-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    cursor: pointer;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, #9ca3af 50%),
+        linear-gradient(135deg, #9ca3af 50%, transparent 50%);
+
+    background-position:
+        calc(100% - 18px) 50%,
+        calc(100% - 12px) 50%;
+
+    background-size:
+        6px 6px,
+        6px 6px;
+
+    background-repeat: no-repeat;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.custom-select:hover {
+    border-color: #4b5563;
+}
+
+.custom-select:focus {
+    border-color: #e6392a;
+    box-shadow: 0 0 0 4px rgba(230, 57, 42, 0.1);
+}
+
+
+/* ========== MODERN FORM INPUTS ========== */
+
+.modern-input {
+    border-radius: 0.75rem;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.modern-input:focus {
+    border-color: #e6392a;
+    box-shadow: 0 0 0 4px rgba(230, 57, 42, 0.1);
+}
+
+
+/* ========== SMOOTH CARDS ========== */
+
+.form-section {
+    border-radius: 1.25rem;
+}
+
+.form-item {
+    border-radius: 1rem;
+}

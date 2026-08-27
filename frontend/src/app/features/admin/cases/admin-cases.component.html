@@ -1,0 +1,1351 @@
+<div class="flex min-h-screen">
+
+    <app-sidebar></app-sidebar>
+
+    <main class="ml-[240px] min-w-0 flex-1">
+        <div class="min-h-screen bg-detective-bg text-detective-text p-6">
+
+            <div class="max-w-7xl mx-auto">
+
+
+                <!-- ================= HEADER ================= -->
+
+                <div class="max-w-[1500px] mx-auto">
+
+                    <header class="mb-8 flex flex-col items-start justify-between gap-5 md:flex-row md:items-center">
+
+                        <div>
+                            <p class="mb-2 text-xs font-bold uppercase tracking-[0.25em] text-detective-red">
+                                Digital Detective
+                            </p>
+
+                            <h1 class="text-3xl font-bold tracking-tight text-detective-text md:text-4xl">
+                                MANAGE CASES
+                            </h1>
+
+                            <p class="mt-2 text-detective-muted">
+                                Oversee active investigations and classified files.
+                            </p>
+                        </div>
+
+
+                        <button type="button" (click)="createNewCase()"
+                            class="group relative flex items-center gap-2 overflow-hidden rounded-[var(--border-radius-btn)] border border-detective-red bg-detective-dark-red px-6 py-3 text-sm font-bold uppercase tracking-wider text-white transition-all duration-300 hover:bg-detective-red hover:shadow-[var(--red-glow-shadow)]">
+
+                            <span class="text-xl leading-none">
+                                +
+                            </span>
+
+                            <span>
+                                Create New Case
+                            </span>
+
+                        </button>
+
+                    </header>
+
+
+                    <!-- ================= MESSAGES ================= -->
+
+                    @if (successMessage) {
+                    <div
+                        class="mb-6 border border-detective-green/40 bg-detective-green/10 px-5 py-4 text-sm text-detective-green">
+                        {{ successMessage }}
+                    </div>
+                    }
+
+                    @if (errorMessage) {
+                    <div
+                        class="mb-6 border border-detective-red/40 bg-detective-red/10 px-5 py-4 text-sm text-detective-red">
+                        {{ errorMessage }}
+                    </div>
+                    }
+
+
+                    <!-- ================= SEARCH & FILTER ================= -->
+
+                    <div
+                        class="mb-5 flex flex-col gap-4 border border-detective-border bg-detective-card p-4 md:flex-row md:items-center">
+
+                        <!-- SEARCH -->
+
+                        <div class="relative flex-1">
+
+                            <span
+                                class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-detective-muted">
+
+                                🔍
+
+                            </span>
+
+                            <input type="text" [(ngModel)]="searchTerm" placeholder="Search cases by ID or title..."
+                                class="w-full rounded-xl border border-detective-border bg-detective-bg py-3 pl-11 pr-4 text-sm text-detective-text outline-none transition focus:border-detective-red" />
+
+                        </div>
+
+
+                        <!-- DIFFICULTY FILTER -->
+
+                        <div class="relative md:w-52">
+
+                            <button type="button"
+                                (click)="isFilterDifficultyDropdownOpen = !isFilterDifficultyDropdownOpen"
+                                class="flex w-full items-center justify-between rounded-xl border border-detective-border bg-detective-bg px-4 py-3 text-left text-sm text-detective-text transition-all duration-200 hover:border-detective-red focus:outline-none focus:ring-2 focus:ring-detective-red/10">
+
+                                <span>{{ selectedDifficulty === 'All' ? 'All Difficulties' : selectedDifficulty
+                                    }}</span>
+
+                                <span class="text-detective-red transition-transform duration-200"
+                                    [class.rotate-180]="isFilterDifficultyDropdownOpen">
+                                    ▾
+                                </span>
+
+                            </button>
+
+                            @if (isFilterDifficultyDropdownOpen) {
+
+                            <div
+                                class="absolute left-0 right-0 top-[calc(100%+6px)] z-40 overflow-hidden rounded-xl border border-detective-border bg-detective-card p-1 shadow-2xl">
+
+                                <button type="button" (click)="selectFilterDifficulty('All')"
+                                    class="flex w-full rounded-lg px-4 py-3 text-left text-sm text-detective-text transition hover:bg-detective-card-hover hover:text-detective-red">
+                                    All Difficulties
+                                </button>
+
+                                <button type="button" (click)="selectFilterDifficulty('Easy')"
+                                    class="flex w-full rounded-lg px-4 py-3 text-left text-sm text-detective-text transition hover:bg-detective-card-hover hover:text-detective-red">
+                                    Easy
+                                </button>
+
+                                <button type="button" (click)="selectFilterDifficulty('Medium')"
+                                    class="flex w-full rounded-lg px-4 py-3 text-left text-sm text-detective-text transition hover:bg-detective-card-hover hover:text-detective-red">
+                                    Medium
+                                </button>
+
+                                <button type="button" (click)="selectFilterDifficulty('Hard')"
+                                    class="flex w-full rounded-lg px-4 py-3 text-left text-sm text-detective-text transition hover:bg-detective-card-hover hover:text-detective-red">
+                                    Hard
+                                </button>
+
+                            </div>
+
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================= LOADING ================= -->
+
+                    @if (isLoading) {
+
+                    <div
+                        class="mb-6 border border-detective-border bg-detective-card p-10 text-center text-detective-muted">
+
+                        Loading classified files...
+
+                    </div>
+
+                    }
+
+
+                    <!-- ================= CASES TABLE ================= -->
+
+                    <div
+                        class="mb-10 overflow-hidden border border-detective-border bg-detective-card shadow-[var(--card-shadow)]">
+
+                        <!-- TABLE HEADER -->
+
+                        <div class="flex items-center justify-between border-b border-detective-border px-5 py-4">
+
+                            <div>
+
+                                <h2 class="text-lg font-bold uppercase tracking-wide text-detective-text">
+                                    Investigation Files
+                                </h2>
+
+                                <p class="mt-1 text-sm text-detective-muted">
+                                    {{ filteredCases.length }} case(s) found
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="overflow-x-auto">
+
+                            <table class="min-w-[850px] w-full border-collapse text-left">
+
+                                <thead>
+
+                                    <tr
+                                        class="border-b border-detective-border bg-detective-bg text-xs font-bold uppercase tracking-wider text-detective-muted">
+
+                                        <th class="px-5 py-4">
+                                            Case ID
+                                        </th>
+
+                                        <th class="px-5 py-4">
+                                            Title
+                                        </th>
+
+                                        <th class="px-5 py-4">
+                                            Difficulty
+                                        </th>
+
+                                        <th class="px-5 py-4">
+                                            Description
+                                        </th>
+
+                                        <th class="px-5 py-4 text-right">
+                                            Actions
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody class="divide-y divide-detective-border">
+
+                                    @for (
+                                    caseItem of filteredCases;
+                                    track caseItem._id
+                                    ) {
+
+                                    <tr class="group transition-colors duration-200 hover:bg-detective-card-hover">
+
+                                        <!-- ID -->
+
+                                        <td class="px-5 py-5 font-mono text-xs text-detective-faded">
+
+                                            #{{ caseItem._id?.slice(-6)?.toUpperCase() }}
+
+                                        </td>
+
+
+                                        <!-- TITLE -->
+
+                                        <td class="px-5 py-5">
+
+                                            <div class="font-semibold text-detective-text">
+
+                                                {{
+                                                caseItem.title ||
+                                                'UNTITLED CASE'
+                                                }}
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <!-- DIFFICULTY -->
+
+                                        <td class="px-5 py-5">
+
+                                            <div class="flex items-center gap-[2px] text-detective-gold">
+
+                                                @for (
+                                                star of [1, 2, 3, 4, 5];
+                                                track star
+                                                ) {
+
+                                                <span class="text-sm"
+                                                    [class.opacity-30]="star > getDifficultyStars(caseItem.difficulty)">
+
+                                                    ★
+
+                                                </span>
+
+                                                }
+
+                                            </div>
+
+                                            <span class="mt-1 block text-xs text-detective-muted">
+
+                                                {{ caseItem.difficulty }}
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- DESCRIPTION -->
+
+                                        <td class="max-w-md truncate px-5 py-5 text-sm text-detective-muted">
+
+                                            {{
+                                            caseItem.description ||
+                                            'No description available.'
+                                            }}
+
+                                        </td>
+
+
+                                        <!-- ACTIONS -->
+
+                                        <td class="px-5 py-5">
+
+                                            <div
+                                                class="flex justify-end gap-2 transition-opacity md:opacity-0 md:group-hover:opacity-100">
+
+
+                                                <!-- EDIT -->
+
+                                                <button type="button" (click)="editCase(caseItem)" title="Edit case"
+                                                    class="border border-transparent p-2 text-detective-gold transition hover:border-detective-gold hover:bg-detective-gold/10">
+
+                                                    ✎
+
+                                                </button>
+
+
+                                                <!-- DELETE -->
+
+                                                <button type="button" (click)="deleteCase(caseItem)" title="Delete case"
+                                                    class="border border-transparent p-2 text-detective-red transition hover:border-detective-red hover:bg-detective-red/10">
+
+                                                    🗑
+
+                                                </button>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                    } @empty {
+
+                                    <tr>
+
+                                        <td colspan="5" class="px-5 py-16 text-center">
+
+                                            <div class="text-4xl opacity-40">
+                                                🕵
+                                            </div>
+
+                                            <p class="mt-4 font-semibold text-detective-muted">
+                                                No investigation files found.
+                                            </p>
+
+                                            <p class="mt-1 text-sm text-detective-faded">
+                                                Try changing your search or create a new case.
+                                            </p>
+
+                                        </td>
+
+                                    </tr>
+
+                                    }
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+                    <!-- ================= FORM ================= -->
+                    <!-- ================= CASE FORM MODAL ================= -->
+
+                    @if (isEditing || clues.length > 0 || questions.length > 0 || suspects.length > 0) {
+
+                    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+
+                        <!-- OVERLAY -->
+                        <div class="absolute inset-0 bg-black/70 backdrop-blur-[3px] modal-overlay"
+                            (click)="cancelEdit()">
+                        </div>
+
+                        <!-- MODAL -->
+
+                        <div
+                            class="relative z-10 flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-detective-border bg-detective-card shadow-2xl">
+                            <!-- ================= MODAL HEADER ================= -->
+
+                            <div
+                                class="flex shrink-0 items-center justify-between border-b border-detective-border bg-detective-bg px-6 py-5">
+                                <div>
+
+                                    <p class="text-xs font-bold uppercase tracking-[0.25em] text-detective-red">
+                                        {{ isEditing ? 'EDIT INVESTIGATION' : 'NEW INVESTIGATION' }}
+                                    </p>
+
+                                    <h2 class="mt-1 text-2xl font-bold text-detective-text">
+
+                                        {{
+                                        isEditing
+                                        ? 'Edit Case File'
+                                        : 'Create New Case File'
+                                        }}
+
+                                    </h2>
+
+                                    <p class="mt-1 text-sm text-detective-muted">
+
+                                        {{
+                                        isEditing
+                                        ? 'Modify the investigation details and related evidence.'
+                                        : 'Build a complete investigation case.'
+                                        }}
+
+                                    </p>
+
+                                </div>
+
+
+                                <!-- CLOSE -->
+
+                                <button type="button" (click)="cancelEdit()"
+                                    class="flex h-10 w-10 items-center justify-center rounded-full border border-detective-border text-xl text-detective-muted transition-all duration-200 hover:rotate-90 hover:border-detective-red hover:bg-detective-red/10 hover:text-detective-red">
+
+                                    ×
+
+                                </button>
+
+                            </div>
+
+
+                            <!-- ================= SCROLLABLE CONTENT ================= -->
+
+                            <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex min-h-0 flex-1 flex-col">
+
+
+                                <!-- SCROLL AREA -->
+
+                                <div class="custom-scrollbar flex-1 overflow-y-auto p-6">
+
+                                    <div class="space-y-8">
+
+
+                                        <!-- ================= BASIC INFO ================= -->
+
+                                        <!-- ================= BASIC INFO ================= -->
+
+                                        <section
+                                            class="rounded-2xl border border-detective-border bg-detective-bg p-6 shadow-[0_8px_30px_rgba(0,0,0,0.25)]">
+
+                                            <!-- SECTION HEADER -->
+
+                                            <div class="mb-6 border-b border-detective-border pb-4">
+
+                                                <p
+                                                    class="text-xs font-bold uppercase tracking-[0.2em] text-detective-red">
+                                                    Case Information
+                                                </p>
+
+                                                <h3 class="mt-1 text-xl font-bold text-detective-text">
+                                                    Basic Details
+                                                </h3>
+
+                                                <p class="mt-1 text-sm text-detective-muted">
+                                                    Enter the main details of this investigation.
+                                                </p>
+
+                                            </div>
+
+
+                                            <div class="grid gap-5 md:grid-cols-2">
+
+
+                                                <!-- TITLE -->
+
+                                                <div>
+
+                                                    <label class="mb-2 block text-sm font-medium text-detective-text">
+                                                        Case Title *
+                                                    </label>
+
+                                                    <input type="text" formControlName="title"
+                                                        placeholder="The Missing Diamond"
+                                                        class="w-full rounded-xl border border-detective-border bg-detective-card px-4 py-3 text-detective-text outline-none transition-all duration-200 placeholder:text-detective-faded focus:border-detective-red focus:ring-2 focus:ring-detective-red/10" />
+
+                                                    @if (
+                                                    form.get('title')?.invalid &&
+                                                    form.get('title')?.touched
+                                                    ) {
+
+                                                    <p class="mt-2 text-xs text-detective-red">
+                                                        Title is required.
+                                                    </p>
+
+                                                    }
+
+                                                </div>
+
+
+                                                <!-- DIFFICULTY -->
+
+                                                <div>
+
+                                                    <label class="mb-2 block text-sm font-medium text-detective-text">
+                                                        Difficulty *
+                                                    </label>
+
+                                                    <div class="relative">
+
+                                                        <!-- CUSTOM DIFFICULTY SELECT -->
+
+                                                        <div class="relative">
+
+                                                            <button type="button" (click)="toggleDifficultyDropdown()"
+                                                                class="flex w-full items-center justify-between rounded-xl border border-detective-border bg-detective-card px-4 py-3 text-left text-detective-text transition-all duration-200 hover:border-detective-red focus:border-detective-red">
+
+                                                                <span>
+                                                                    {{ form.get('difficulty')?.value || 'Select
+                                                                    difficulty' }}
+                                                                </span>
+
+                                                                <span
+                                                                    class="text-sm text-detective-muted transition-transform duration-200"
+                                                                    [class.rotate-180]="isDifficultyDropdownOpen">
+
+                                                                    ▼
+
+                                                                </span>
+
+                                                            </button>
+
+
+                                                            @if (isDifficultyDropdownOpen) {
+
+                                                            <div
+                                                                class="absolute left-0 right-0 top-[calc(100%+8px)] z-50 overflow-hidden rounded-xl border border-detective-border bg-detective-card p-1 shadow-2xl">
+
+                                                                <button type="button" (click)="selectDifficulty('Easy')"
+                                                                    class="flex w-full items-center rounded-lg px-4 py-3 text-left text-detective-text transition hover:bg-detective-card-hover hover:text-detective-red">
+
+                                                                    Easy
+
+                                                                </button>
+
+
+                                                                <button type="button"
+                                                                    (click)="selectDifficulty('Medium')"
+                                                                    class="flex w-full items-center rounded-lg px-4 py-3 text-left text-detective-text transition hover:bg-detective-card-hover hover:text-detective-red">
+
+                                                                    Medium
+
+                                                                </button>
+
+
+                                                                <button type="button" (click)="selectDifficulty('Hard')"
+                                                                    class="flex w-full items-center rounded-lg px-4 py-3 text-left text-detective-text transition hover:bg-detective-card-hover hover:text-detective-red">
+
+                                                                    Hard
+
+                                                                </button>
+
+                                                            </div>
+
+                                                            }
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <!-- DESCRIPTION -->
+
+                                            <div class="mt-5">
+
+                                                <label class="mb-2 block text-sm font-medium text-detective-text">
+                                                    Description *
+                                                </label>
+
+                                                <textarea rows="3" formControlName="description"
+                                                    placeholder="Short description of the case..."
+                                                    class="w-full resize-none rounded-xl border border-detective-border bg-detective-card px-4 py-3 text-detective-text outline-none transition-all duration-200 placeholder:text-detective-faded focus:border-detective-red focus:ring-2 focus:ring-detective-red/10"></textarea>
+
+                                            </div>
+
+
+                                            <!-- STORY INTRO -->
+
+                                            <div class="mt-5">
+
+                                                <label class="mb-2 block text-sm font-medium text-detective-text">
+                                                    Story Introduction *
+                                                </label>
+
+                                                <textarea rows="4" formControlName="storyIntro"
+                                                    placeholder="How does the investigation begin?"
+                                                    class="w-full resize-none rounded-xl border border-detective-border bg-detective-card px-4 py-3 text-detective-text outline-none transition-all duration-200 placeholder:text-detective-faded focus:border-detective-red focus:ring-2 focus:ring-detective-red/10"></textarea>
+
+                                            </div>
+
+
+                                            <!-- FULL SOLUTION -->
+
+                                            <div class="mt-5">
+
+                                                <label class="mb-2 block text-sm font-medium text-detective-text">
+                                                    Full Solution Story *
+                                                </label>
+
+                                                <textarea rows="5" formControlName="fullSolutionStory"
+                                                    placeholder="Write the complete solution..."
+                                                    class="w-full resize-none rounded-xl border border-detective-border bg-detective-card px-4 py-3 text-detective-text outline-none transition-all duration-200 placeholder:text-detective-faded focus:border-detective-red focus:ring-2 focus:ring-detective-red/10"></textarea>
+
+                                            </div>
+
+                                        </section>
+
+
+
+                                        <!-- ================= CLUES ================= -->
+
+                                        <section
+                                            class="rounded-2xl border border-detective-border bg-detective-bg p-6 shadow-[0_8px_30px_rgba(0,0,0,0.25)]">
+
+
+                                            <!-- SECTION HEADER -->
+
+                                            <div
+                                                class="mb-6 flex flex-col gap-4 border-b border-detective-border pb-5 sm:flex-row sm:items-start sm:justify-between">
+
+                                                <div>
+
+                                                    <p
+                                                        class="text-xs font-bold uppercase tracking-[0.2em] text-detective-gold">
+                                                        Evidence
+                                                    </p>
+
+                                                    <h3 class="mt-1 text-xl font-bold text-detective-text">
+                                                        Investigation Clues
+                                                    </h3>
+
+                                                    <p class="mt-1 text-sm text-detective-muted">
+                                                        Add the evidence discovered during the investigation.
+                                                    </p>
+
+                                                </div>
+
+
+                                                <!-- ADD CLUE -->
+
+                                                <button type="button" (click)="addClue()"
+                                                    class="shrink-0 rounded-xl border border-detective-gold px-4 py-2.5 text-sm font-semibold text-detective-gold transition-all duration-200 hover:-translate-y-0.5 hover:bg-detective-gold/10 hover:shadow-[0_4px_15px_rgba(234,179,8,0.12)] active:translate-y-0">
+
+                                                    + Add Clue
+
+                                                </button>
+
+                                            </div>
+
+
+                                            <!-- CLUES ARRAY -->
+
+                                            <div formArrayName="clues" class="space-y-5">
+
+
+                                                @for (
+                                                clue of clues.controls;
+                                                track $index;
+                                                let i = $index
+                                                ) {
+
+                                                <!-- CLUE CARD -->
+
+                                                <div [formGroupName]="i"
+                                                    class="rounded-xl  border border-detective-border bg-detective-card p-5 transition-all duration-200 hover:border-detective-gold/40 hover:shadow-[0_6px_20px_rgba(0,0,0,0.2)]">
+
+
+                                                    <!-- CLUE CARD HEADER -->
+
+                                                    <div
+                                                        class="mb-5 flex items-center justify-between border-b border-detective-border pb-4">
+
+                                                        <div>
+
+                                                            <p
+                                                                class="text-xs font-medium uppercase tracking-wider text-detective-muted">
+                                                                Evidence File
+                                                            </p>
+
+                                                            <h4 class="mt-1 font-semibold text-detective-gold">
+                                                                Evidence #{{ i + 1 }}
+                                                            </h4>
+
+                                                        </div>
+
+
+                                                        <!-- REMOVE -->
+
+                                                        <button type="button" (click)="removeClue(i)"
+                                                            class="rounded-lg px-3 py-2 text-sm font-medium text-detective-red transition-all duration-200 hover:bg-detective-red/10 hover:text-detective-red-hover">
+
+                                                            Remove
+
+                                                        </button>
+
+                                                    </div>
+
+
+                                                    <!-- ORDER + TITLE -->
+
+                                                    <div class="grid gap-4 md:grid-cols-3">
+
+
+                                                        <!-- ORDER -->
+
+                                                        <div>
+
+                                                            <label
+                                                                class="mb-2 block text-sm font-medium text-detective-muted">
+                                                                Order
+                                                            </label>
+
+                                                            <input type="number" formControlName="order" min="1"
+                                                                class="custom-number-input w-full rounded-xl border border-detective-border bg-detective-bg px-4 py-3 text-detective-text outline-none transition-all duration-200 focus:border-detective-gold focus:ring-2 focus:ring-detective-gold/10" />
+
+                                                        </div>
+
+
+                                                        <!-- TITLE -->
+
+                                                        <div class="md:col-span-2">
+
+                                                            <label
+                                                                class="mb-2 block text-sm font-medium text-detective-muted">
+                                                                Title
+                                                            </label>
+
+                                                            <input type="text" formControlName="title"
+                                                                placeholder="Security Camera"
+                                                                class="w-full rounded-xl border border-detective-border bg-detective-bg px-4 py-3 text-detective-text outline-none transition-all duration-200 placeholder:text-detective-faded focus:border-detective-gold focus:ring-2 focus:ring-detective-gold/10" />
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    <!-- CONTENT -->
+
+                                                    <div class="mt-5">
+
+                                                        <label
+                                                            class="mb-2 block text-sm font-medium text-detective-muted">
+                                                            Content
+                                                        </label>
+
+                                                        <textarea rows="3" formControlName="content"
+                                                            placeholder="Describe the clue..."
+                                                            class="w-full resize-none rounded-xl border border-detective-border bg-detective-bg px-4 py-3 text-detective-text outline-none transition-all duration-200 placeholder:text-detective-faded focus:border-detective-gold focus:ring-2 focus:ring-detective-gold/10"></textarea>
+
+                                                    </div>
+
+                                                </div>
+
+                                                }
+
+                                            </div>
+
+                                        </section>
+
+                                        <!-- ================= QUESTIONS ================= -->
+
+                                        <section
+                                            class="rounded-2xl border border-detective-border bg-detective-bg p-6 shadow-[0_8px_30px_rgba(0,0,0,0.25)]">
+
+
+                                            <!-- SECTION HEADER -->
+
+                                            <div
+                                                class="mb-6 flex flex-col gap-4 border-b border-detective-border pb-5 sm:flex-row sm:items-start sm:justify-between">
+
+                                                <div>
+
+                                                    <p
+                                                        class="text-xs font-bold uppercase tracking-[0.2em] text-detective-red">
+                                                        Interrogation
+                                                    </p>
+
+                                                    <h3 class="mt-1 text-xl font-bold text-detective-text">
+                                                        Final Questions
+                                                    </h3>
+
+                                                    <p class="mt-1 text-sm text-detective-muted">
+                                                        Create the questions used to solve the case.
+                                                    </p>
+
+                                                </div>
+
+
+                                                <!-- ADD QUESTION -->
+
+                                                <button type="button" (click)="addQuestion()"
+                                                    class="shrink-0 rounded-xl border border-detective-red px-4 py-2.5 text-sm font-semibold text-detective-red transition-all duration-200 hover:-translate-y-0.5 hover:bg-detective-red/10 hover:shadow-[0_4px_15px_rgba(230,57,42,0.15)] active:translate-y-0">
+
+                                                    + Add Question
+
+                                                </button>
+
+                                            </div>
+
+
+                                            <!-- QUESTIONS ARRAY -->
+
+                                            <div formArrayName="questions" class="space-y-6">
+
+
+                                                @for (
+                                                question of questions.controls;
+                                                track $index;
+                                                let i = $index
+                                                ) {
+
+                                                <!-- QUESTION CARD -->
+
+                                                <div [formGroupName]="i"
+                                                    class="rounded-xl  border border-detective-border bg-detective-card p-5 transition-all duration-200 hover:border-detective-red/40 hover:shadow-[0_6px_20px_rgba(0,0,0,0.2)]">
+
+
+                                                    <!-- QUESTION HEADER -->
+
+                                                    <div
+                                                        class="mb-5 flex items-center justify-between border-b border-detective-border pb-4">
+
+                                                        <div>
+
+                                                            <p
+                                                                class="text-xs font-medium uppercase tracking-wider text-detective-muted">
+                                                                Interrogation File
+                                                            </p>
+
+                                                            <h4 class="mt-1 font-semibold text-detective-red">
+                                                                Question #{{ i + 1 }}
+                                                            </h4>
+
+                                                        </div>
+
+
+                                                        <!-- REMOVE QUESTION -->
+
+                                                        <button type="button" (click)="removeQuestion(i)"
+                                                            class="rounded-lg px-3 py-2 text-sm font-medium text-detective-red transition-all duration-200 hover:bg-detective-red/10 hover:text-detective-red-hover">
+
+                                                            Remove
+
+                                                        </button>
+
+                                                    </div>
+
+
+                                                    <!-- TYPE + POINTS -->
+
+                                                    <div class="grid gap-4 md:grid-cols-2">
+
+
+                                                        <!-- QUESTION TYPE -->
+
+                                                        <div>
+
+                                                            <label
+                                                                class="mb-2 block text-sm font-medium text-detective-muted">
+                                                                Question Type
+                                                            </label>
+
+                                                            <div class="relative">
+
+                                                                <div class="relative">
+
+                                                                    <button type="button"
+                                                                        (click)="openQuestionDropdownIndex = openQuestionDropdownIndex === i ? null : i"
+                                                                        class="flex w-full items-center justify-between rounded-xl border border-detective-border bg-detective-bg px-3 py-2 text-left text-detective-text transition-all duration-200 hover:border-detective-red focus:border-detective-red focus:outline-none focus:ring-2 focus:ring-detective-red/10">
+
+                                                                        <span>
+                                                                            {{
+                                                                            questions.at(i).get('questionType')?.value
+                                                                            }}
+                                                                        </span>
+
+                                                                        <span class="text-detective-red">
+                                                                            ▾
+                                                                        </span>
+
+                                                                    </button>
+
+
+                                                                    @if (openQuestionDropdownIndex === i) {
+
+                                                                    <div
+                                                                        class="absolute left-0 right-0 top-[calc(100%+6px)] z-50 overflow-hidden rounded-xl border border-detective-border bg-detective-card p-1 shadow-2xl">
+
+                                                                        <button type="button"
+                                                                            (click)="selectQuestionType(i, 'who')"
+                                                                            class="flex w-full rounded-lg px-4 py-3 text-left text-detective-text transition hover:bg-detective-card-hover hover:text-detective-red">
+                                                                            Who
+                                                                        </button>
+
+                                                                        <button type="button"
+                                                                            (click)="selectQuestionType(i, 'why')"
+                                                                            class="flex w-full rounded-lg px-4 py-3 text-left text-detective-text transition hover:bg-detective-card-hover hover:text-detective-red">
+                                                                            Why
+                                                                        </button>
+
+                                                                        <button type="button"
+                                                                            (click)="selectQuestionType(i, 'how')"
+                                                                            class="flex w-full rounded-lg px-4 py-3 text-left text-detective-text transition hover:bg-detective-card-hover hover:text-detective-red">
+                                                                            How
+                                                                        </button>
+
+                                                                    </div>
+
+                                                                    }
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+
+
+                                                        <!-- POINTS -->
+
+                                                        <div>
+
+                                                            <label
+                                                                class="mb-2 block text-sm font-medium text-detective-muted">
+                                                                Points
+                                                            </label>
+
+                                                            <input type="number" formControlName="points" min="1"
+                                                                class="custom-number-input w-full rounded-xl border border-detective-border bg-detective-bg px-4 py-3 text-detective-text outline-none transition-all duration-200 focus:border-detective-red focus:ring-2 focus:ring-detective-red/10" />
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    <!-- QUESTION TEXT -->
+
+                                                    <div class="mt-5">
+
+                                                        <label
+                                                            class="mb-2 block text-sm font-medium text-detective-muted">
+                                                            Question
+                                                        </label>
+
+                                                        <input type="text" formControlName="questionText"
+                                                            placeholder="Who is the culprit?"
+                                                            class="w-full rounded-xl border border-detective-border bg-detective-bg px-4 py-3 text-detective-text outline-none transition-all duration-200 placeholder:text-detective-faded focus:border-detective-red focus:ring-2 focus:ring-detective-red/10" />
+
+                                                    </div>
+
+
+                                                    <!-- OPTIONS -->
+
+                                                    <div class="mt-6">
+
+
+                                                        <div
+                                                            class="mb-3 flex flex-wrap items-center justify-between gap-3">
+
+                                                            <div>
+
+                                                                <label
+                                                                    class="block text-sm font-medium text-detective-text">
+                                                                    Answer Options
+                                                                </label>
+
+                                                                <p class="mt-1 text-xs text-detective-faded">
+                                                                    Add all possible answers, then choose the correct
+                                                                    one.
+                                                                </p>
+
+                                                            </div>
+
+
+                                                            <button type="button" (click)="addOption(i)"
+                                                                class="rounded-lg px-3 py-2 text-sm font-semibold text-detective-gold transition-all duration-200 hover:bg-detective-gold/10 hover:text-detective-text">
+
+                                                                + Add Option
+
+                                                            </button>
+
+                                                        </div>
+
+
+                                                        <div formArrayName="options" class="space-y-3">
+
+
+                                                            @for (
+                                                            option of getOptions(i).controls;
+                                                            track $index;
+                                                            let j = $index
+                                                            ) {
+
+                                                            <div class="flex gap-3">
+
+
+                                                                <input type="text" [formControlName]="j"
+                                                                    placeholder="Option {{ j + 1 }}"
+                                                                    class="w-full rounded-xl border border-detective-border bg-detective-bg px-4 py-3 text-detective-text outline-none transition-all duration-200 placeholder:text-detective-faded focus:border-detective-gold focus:ring-2 focus:ring-detective-gold/10" />
+
+
+                                                                <!-- REMOVE OPTION -->
+
+                                                                <button type="button" (click)="removeOption(i, j)"
+                                                                    title="Remove option"
+                                                                    class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-detective-red/40 text-xl text-detective-red transition-all duration-200 hover:bg-detective-red/10 hover:shadow-[0_4px_12px_rgba(230,57,42,0.12)]">
+
+                                                                    ×
+
+                                                                </button>
+
+                                                            </div>
+
+                                                            }
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    <!-- CORRECT ANSWER -->
+
+                                                    <div class="mt-6 border-t border-detective-border pt-5">
+
+                                                        <label
+                                                            class="mb-2 block text-sm font-medium text-detective-text">
+                                                            Correct Answer
+                                                        </label>
+
+                                                        <div class="relative">
+
+                                                            <div class="relative">
+
+                                                                <!-- BUTTON -->
+
+                                                                <button type="button"
+                                                                    (click)="openCorrectAnswerDropdownIndex = openCorrectAnswerDropdownIndex === i ? null : i"
+                                                                    class="flex w-full items-center justify-between rounded-xl border border-detective-border bg-detective-bg px-3 py-2 text-left text-detective-text transition-all duration-200 hover:border-detective-gold focus:border-detective-gold focus:outline-none focus:ring-2 focus:ring-detective-gold/10">
+
+                                                                    <span>
+                                                                        {{
+                                                                        questions.at(i).get('correctAnswer')?.value ||
+                                                                        'Select the correct answer'
+                                                                        }}
+                                                                    </span>
+
+                                                                    <span class="text-detective-gold">
+                                                                        ▾
+                                                                    </span>
+
+                                                                </button>
+
+
+                                                                <!-- OPTIONS -->
+
+                                                                @if (openCorrectAnswerDropdownIndex === i) {
+
+                                                                <div
+                                                                    class="absolute left-0 right-0 top-[calc(100%+6px)] z-50 max-h-56 overflow-y-auto rounded-xl border border-detective-border bg-detective-card p-1 shadow-2xl">
+
+                                                                    <button type="button"
+                                                                        (click)="selectCorrectAnswer(i, '')"
+                                                                        class="flex w-full rounded-lg px-4 py-3 text-left text-detective-muted transition hover:bg-detective-card-hover">
+
+                                                                        Select the correct answer
+
+                                                                    </button>
+
+
+                                                                    @for (
+                                                                    option of getOptions(i).controls;
+                                                                    track $index;
+                                                                    let j = $index
+                                                                    ) {
+
+                                                                    <button type="button"
+                                                                        (click)="selectCorrectAnswer(i, option.value)"
+                                                                        class="flex w-full rounded-lg px-4 py-3 text-left text-detective-text transition hover:bg-detective-card-hover hover:text-detective-gold">
+
+                                                                        {{
+                                                                        option.value ||
+                                                                        ('Option ' + (j + 1))
+                                                                        }}
+
+                                                                    </button>
+
+                                                                    }
+
+                                                                </div>
+
+                                                                }
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                                }
+
+                                            </div>
+
+                                        </section>
+
+
+                                        <!-- ================= SUSPECTS ================= -->
+                                        <section
+                                            class="rounded-2xl border border-detective-border bg-detective-bg p-6 shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
+
+                                            <div
+                                                class="mb-6 flex items-start justify-between gap-4 border-b border-detective-border pb-4">
+
+                                                <div>
+
+                                                    <p
+                                                        class="text-xs font-bold uppercase tracking-[0.2em] text-detective-gold">
+                                                        Persons of Interest
+                                                    </p>
+
+                                                    <h3 class="mt-1 text-xl font-bold text-detective-text">
+                                                        Suspects & Characters
+                                                    </h3>
+
+                                                    <p class="mt-1 text-sm text-detective-muted">
+                                                        Add suspects, witnesses, victims or accomplices.
+                                                    </p>
+
+                                                </div>
+
+
+                                                <button type="button" (click)="addSuspect()"
+                                                    class="shrink-0 rounded-xl border border-detective-gold px-4 py-2 text-sm font-semibold text-detective-gold transition-all duration-200 hover:scale-[1.02] hover:bg-detective-gold/10 active:scale-95">
+
+                                                    + Add Character
+
+                                                </button>
+
+                                            </div>
+
+
+                                            <div formArrayName="suspects" class="space-y-5">
+
+                                                @for (
+                                                suspect of suspects.controls;
+                                                track $index;
+                                                let i = $index
+                                                ) {
+
+                                                <div [formGroupName]="i"
+                                                    class="rounded-xl  border border-detective-border bg-detective-card p-5 transition-all duration-200 hover:border-detective-gold/50">
+
+
+                                                    <!-- CHARACTER HEADER -->
+
+                                                    <div
+                                                        class="mb-5 flex items-center justify-between border-b border-detective-border pb-3">
+
+                                                        <h4 class="font-semibold text-detective-gold">
+
+                                                            Character #{{ i + 1 }}
+
+                                                        </h4>
+
+
+                                                        <button type="button" (click)="removeSuspect(i)"
+                                                            class="rounded-lg px-3 py-1 text-sm font-medium text-detective-red transition-all duration-200 hover:bg-detective-red/10 hover:text-detective-red-hover">
+
+                                                            Remove
+
+                                                        </button>
+
+                                                    </div>
+
+
+                                                    <!-- NAME + ROLE -->
+
+                                                    <div class="grid gap-4 md:grid-cols-2">
+
+
+                                                        <!-- NAME -->
+
+                                                        <div>
+
+                                                            <label class="mb-2 block text-sm text-detective-muted">
+                                                                Name
+                                                            </label>
+
+                                                            <input type="text" formControlName="name"
+                                                                placeholder="Ahmed"
+                                                                class="w-full rounded-xl border border-detective-border bg-detective-bg px-4 py-3 text-detective-text outline-none transition-all duration-200 placeholder:text-detective-faded hover:border-detective-faded focus:-translate-y-[1px] focus:border-detective-gold focus:ring-2 focus:ring-detective-gold/10" />
+
+                                                        </div>
+
+
+                                                        <!-- ROLE -->
+
+                                                        <div>
+
+                                                            <label class="mb-2 block text-sm text-detective-muted">
+                                                                Role
+                                                            </label>
+
+                                                            <div class="relative">
+
+                                                                <button type="button"
+                                                                    (click)="openRoleDropdownIndex = openRoleDropdownIndex === i ? null : i"
+                                                                    class="flex w-full items-center justify-between rounded-xl border border-detective-border bg-detective-bg px-4 py-3 text-left text-detective-text transition-all duration-200 hover:border-detective-gold focus:outline-none focus:ring-2 focus:ring-detective-gold/10">
+
+                                                                    <span>
+                                                                        {{ suspects.at(i).get('role')?.value || 'Select
+                                                                        Role' }}
+                                                                    </span>
+
+                                                                    <span
+                                                                        class="text-detective-gold transition-transform duration-200"
+                                                                        [class.rotate-180]="openRoleDropdownIndex === i">
+                                                                        ▾
+                                                                    </span>
+
+                                                                </button>
+
+                                                                @if (openRoleDropdownIndex === i) {
+
+                                                                <div
+                                                                    class="absolute left-0 right-0 top-[calc(100%+6px)] z-50 overflow-hidden rounded-xl border border-detective-border bg-detective-card p-1 shadow-2xl">
+
+                                                                    <button type="button"
+                                                                        (click)="selectRole(i, 'suspect')"
+                                                                        class="flex w-full items-center rounded-lg px-4 py-3 text-left text-detective-text transition hover:bg-detective-card-hover hover:text-detective-gold">
+                                                                        Suspect
+                                                                    </button>
+
+                                                                    <button type="button"
+                                                                        (click)="selectRole(i, 'witness')"
+                                                                        class="flex w-full items-center rounded-lg px-4 py-3 text-left text-detective-text transition hover:bg-detective-card-hover hover:text-detective-gold">
+                                                                        Witness
+                                                                    </button>
+
+                                                                    <button type="button"
+                                                                        (click)="selectRole(i, 'victim')"
+                                                                        class="flex w-full items-center rounded-lg px-4 py-3 text-left text-detective-text transition hover:bg-detective-card-hover hover:text-detective-gold">
+                                                                        Victim
+                                                                    </button>
+
+                                                                    <button type="button"
+                                                                        (click)="selectRole(i, 'accomplice')"
+                                                                        class="flex w-full items-center rounded-lg px-4 py-3 text-left text-detective-text transition hover:bg-detective-card-hover hover:text-detective-gold">
+                                                                        Accomplice
+                                                                    </button>
+
+                                                                </div>
+
+                                                                }
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    <!-- STATEMENT -->
+
+                                                    <div class="mt-5">
+
+                                                        <label class="mb-2 block text-sm text-detective-muted">
+                                                            Statement
+                                                        </label>
+
+                                                        <textarea rows="3" formControlName="statement"
+                                                            placeholder="What does this character say?"
+                                                            class="w-full resize-none rounded-xl border border-detective-border bg-detective-bg px-4 py-3 text-detective-text outline-none transition-all duration-200 placeholder:text-detective-faded hover:border-detective-faded focus:-translate-y-[1px] focus:border-detective-gold focus:ring-2 focus:ring-detective-gold/10"></textarea>
+
+                                                    </div>
+
+
+                                                    <!-- AVATAR -->
+
+                                                    <div class="mt-5">
+
+                                                        <label class="mb-2 block text-sm text-detective-muted">
+                                                            Avatar URL
+                                                        </label>
+
+                                                        <input type="url" formControlName="avatar"
+                                                            placeholder="https://example.com/avatar.jpg"
+                                                            class="w-full rounded-xl border border-detective-border bg-detective-bg px-4 py-3 text-detective-text outline-none transition-all duration-200 placeholder:text-detective-faded hover:border-detective-faded focus:-translate-y-[1px] focus:border-detective-gold focus:ring-2 focus:ring-detective-gold/10" />
+
+                                                    </div>
+
+                                                </div>
+
+                                                }
+
+                                            </div>
+
+                                        </section>
+                                    </div>
+
+                                </div>
+
+
+                                <!-- ================= FIXED MODAL FOOTER ================= -->
+
+                                <div
+                                    class="flex shrink-0 items-center justify-between border-b border-detective-border bg-detective-bg px-6 py-5">
+
+                                    <button type="button" (click)="cancelEdit()"
+                                        class="min-w-[140px] rounded-xl border border-detective-border px-6 py-3 font-semibold text-detective-muted transition hover:bg-detective-card-hover hover:text-detective-text">
+                                        Cancel
+
+                                    </button>
+
+
+                                    <button type="submit" [disabled]="isSubmitting"
+                                        class="min-w-[160px] rounded-xl border border-detective-red bg-detective-dark-red px-8 py-3 font-bold text-detective-text transition hover:bg-detective-dark-red-hover disabled:cursor-not-allowed disabled:opacity-50">
+                                        @if (isSubmitting) {
+
+                                        Saving...
+
+                                        } @else {
+
+                                        {{
+                                        isEditing
+                                        ? 'Save Changes'
+                                        : 'Create Case'
+                                        }}
+
+                                        }
+
+                                    </button>
+
+
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                    }
+                    <!-- DELETE CONFIRM DIALOG -->
+                    <app-confirm-dialog [isOpen]="isDeleteDialogOpen" title="Delete Case"
+                        [message]="'Are you sure you want to delete ' + (caseToDelete?.title || 'this case') + '? This action cannot be undone.'"
+                        (confirm)="confirmDelete()" (cancel)="cancelDelete()">
+                    </app-confirm-dialog>
+                </div>
+
+
+            </div>
+        </div>
+
+    </main>
+
+</div>
