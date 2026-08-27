@@ -1,0 +1,26 @@
+<div class="stepper-box">
+  <!-- النص البسيط بالأعلى -->
+  <div class="stepper-text">
+    <span>{{ unlockedCount }} / {{ clues.length }} Clues Opened </span>
+  </div>
+
+  <!-- مسار الخط والدوائر -->
+  <div class="track-area">
+    <!-- الخط الرمادي الأساسي -->
+    <div class="base-line"></div>
+
+    <!-- خط التقدم الأخضر الذي يتمدد -->
+    <div class="active-line" [style.width.%]="progressPercentage"></div>
+
+    <!-- الدوائر المرقمة -->
+    <div class="circles-row">
+      @for (clue of clues; track clue._id; let i = $index) {
+        <div 
+          class="num-circle" 
+          [class.active]="clue.isUnlocked">
+          {{ i + 1 }}
+        </div>
+      }
+    </div>
+  </div>
+</div>

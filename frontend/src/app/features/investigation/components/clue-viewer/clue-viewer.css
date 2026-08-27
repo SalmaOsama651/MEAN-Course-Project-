@@ -1,0 +1,180 @@
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+  padding: 10px;
+}
+
+.card {
+  overflow: visible;
+  width: 220px;
+  height: 290px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.card.locked {
+  cursor: not-allowed;
+  opacity: 0.5;
+  filter: grayscale(0.6);
+}
+
+.content {
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--card-shadow);
+  border-radius: var(--border-radius-card);
+  position: relative;
+}
+
+/* حركة قلب الكارت عند الفتح */
+.card.flipped .content {
+  transform: rotateY(180deg);
+}
+
+.front, .back {
+  background-color: var(--color-detective-card);
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: var(--border-radius-card);
+  overflow: hidden;
+}
+
+/* ================= الظهر (Back) ================= */
+.back {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--color-detective-border);
+}
+
+/* الإطار الدوار المضيء */
+.back::before {
+  position: absolute;
+  content: ' ';
+  display: block;
+  width: 180px;
+  height: 160%;
+  background: linear-gradient(90deg, transparent, var(--color-detective-gold), var(--color-detective-gold), transparent);
+  animation: rotation_border 5000ms infinite linear;
+}
+
+.card.locked .back::before {
+  background: linear-gradient(90deg, transparent, var(--color-detective-border), var(--color-detective-border), transparent);
+  animation: none;
+}
+
+.back-content {
+  position: absolute;
+  width: 98%;
+  height: 98%;
+  background-color: var(--color-detective-card);
+  border-radius: var(--border-radius-card);
+  color: var(--color-detective-text);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  text-align: center;
+}
+
+.key-icon-wrapper {
+  color: var(--color-detective-gold);
+  filter: drop-shadow(0 0 8px rgba(234, 179, 8, 0.4));
+  transition: transform 0.3s ease;
+}
+
+.card:not(.locked):hover .key-icon-wrapper {
+  transform: scale(1.1) rotate(-8deg);
+}
+
+.back-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.title-action {
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  color: var(--color-detective-gold);
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.status-hint {
+  font-size: 11px;
+  color: var(--color-detective-muted);
+}
+
+@keyframes rotation_border {
+  0% { transform: rotateZ(0deg); }
+  100% { transform: rotateZ(360deg); }
+}
+
+/* ================= الوجه (Front) ================= */
+.front {
+  transform: rotateY(180deg);
+  border: 1.5px solid var(--color-detective-gold);
+  box-shadow: 0 0 15px rgba(234, 179, 8, 0.15);
+}
+
+.front-content {
+  width: 100%;
+  height: 100%;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+
+/* دائرة رقم الدليل بالبداية */
+.clue-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--color-detective-bg);
+  border: 1.5px solid var(--color-detective-gold);
+  color: var(--color-detective-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  font-family: monospace;
+  box-shadow: 0 0 8px rgba(234, 179, 8, 0.35);
+  align-self: flex-start;
+  margin-bottom: 16px;
+}
+
+/* العنوان الرئيسي */
+.clue-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-detective-text);
+  margin: 0 0 10px 0;
+  line-height: 1.35;
+  text-align: center;
+}
+
+/* نص الدليل */
+.clue-body {
+  font-size: 12px;
+  color: var(--color-detective-muted);
+  line-height: 1.6;
+  margin: 0;
+  text-align: center;
+}

@@ -1,0 +1,207 @@
+
+
+<!-- ////////// -->
+ <div class="min-h-screen p-6 max-w-[1600px] mx-auto flex flex-col gap-6 text-[var(--color-detective-text)]">
+
+<!-- ================= 1. الهيدر العلوي ================= -->
+<header class="w-full bg-[var(--color-detective-card)] border border-[var(--color-detective-border)] rounded-xl p-4 px-6 flex justify-between items-center shadow-[var(--card-shadow)] gap-4">
+  
+  <!-- الطرف الأيسر: زر الخروج لقائمة القضايا + عنوان القضية -->
+  <div class="flex items-center gap-4">
+    <button 
+      type="button"
+      (click)="goBackToCases()"
+      class="flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-[var(--color-detective-muted)] hover:text-white bg-[var(--color-detective-card)] border border-[var(--color-detective-border)] hover:border-amber-400 rounded-lg transition-all">
+      <span>←</span>
+      <span>Exit to Cases</span>
+    </button>
+
+    <div class="h-6 w-[1px] bg-[var(--color-detective-border)]"></div>
+
+    <div class="flex items-center gap-2">
+      <div>
+        <h1 class="text-sm font-bold text-[var(--color-detective-gold)]">
+          {{ mockCaseInfo?.title || 'Classified Case' }}
+        </h1>
+        <p class="text-[10px] text-[var(--color-detective-muted)]">Active Investigation</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- المنتصف: زر الانتقال لصفحة الاتهام (يظهر فقط عند اكتمال فتح جميع الأدلة) -->
+  <div class="flex items-center justify-center min-w-[220px]">
+    @if (allCluesUnlocked) {
+      <button 
+        type="button"
+        (click)="openAccuse()"
+        class="px-6 py-2 bg-[var(--color-detective-red)] hover:bg-red-700 text-white font-extrabold text-xs uppercase tracking-wider rounded-lg shadow-[0_0_15px_rgba(230,57,42,0.6)] transition-all animate-pulse">
+        ⚖️ Proceed to Accusation
+      </button>
+    } @else {
+<button 
+      type="button" 
+      disabled 
+      class="px-5 py-2.5 bg-[var(--color-detective-bg)] border border-[var(--color-detective-border)] text-[var(--color-detective-muted)] opacity-60 font-bold text-xs uppercase tracking-wider rounded-lg cursor-not-allowed flex items-center gap-2 select-none">
+      <span>🔒</span>
+      <span>Unlock All Clues First</span>
+    </button>
+    }
+  </div>
+
+  <!-- الطرف الأيمن: التايمر التنازلي التفاعلي -->
+  <div class="flex items-center gap-2.5 bg-[var(--color-detective-bg)] border border-[var(--color-detective-border)] px-4 py-2 rounded-lg">
+    <span class="text-xs text-[var(--color-detective-muted)] font-medium">Time Left:</span>
+    <span class="font-mono text-base font-bold text-[var(--color-detective-red)] tracking-wider">
+               ⏳ {{ remainingTime() | timer }}  
+  </span>
+  </div>
+
+</header>
+
+  <!-- ================= 2. جسم الصفحة (Grid مقسم لـ 3 أعمدة) ================= -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+    <!-- العمود الجانبي الأول (3 أعمدة): القصة والضحية تحتها -->
+    <aside class="lg:col-span-3 flex flex-col gap-6">
+      
+              <!-- كارت الضحية -->
+        <!-- 🔴 هنا يوضع كومبوننت كارت الضحية: <app-suspect-card [isVictim]="true"> -->
+        @if (victim) {
+              <app-suspect-card [suspect]="victim" [isVictim]="true"></app-suspect-card>
+                      }
+           
+
+<!-- //////////////////////////////////////////////////////////////// -->
+   <!-- صندوق تفاصيل القضية المنظم -->
+  <div class="bg-[var(--color-detective-card)] border border-[var(--color-detective-border)] p-5 rounded-lg shadow-[var(--card-shadow)] flex flex-col gap-4">
+    
+    <!-- السطر العلوي: شارة الصعوبة على اليمين/الشمال -->
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-mono text-[var(--color-detective-muted)] uppercase tracking-wider">Case Brief</span>
+      
+      <!-- شارة الصعوبة بتلوين ديناميكي -->
+<span 
+        class="text-xs px-2.5 py-1 rounded-full font-bold border"
+        [class.text-green-400]="mockCaseInfo?.difficulty === 'Easy'"
+        [class.border-green-800]="mockCaseInfo?.difficulty === 'Easy'"
+        [class.bg-green-950]="mockCaseInfo?.difficulty === 'Easy'"
+        [class.text-[var(--color-detective-gold)]]="mockCaseInfo?.difficulty === 'Medium'"
+        [class.border-[var(--color-detective-border)]]="mockCaseInfo?.difficulty === 'Medium'"
+        [class.bg-yellow-950]="mockCaseInfo?.difficulty === 'Medium'"
+        [class.text-[var(--color-detective-red)]]="mockCaseInfo?.difficulty === 'Hard'"
+        [class.border-red-800]="mockCaseInfo?.difficulty === 'Hard'"
+        [class.bg-red-950]="mockCaseInfo?.difficulty === 'Hard'">
+        {{ mockCaseInfo?.difficulty }}
+      </span>
+    </div>
+
+    <!-- عنوان القضية بارز في المنتصف -->
+    <div class="border-b border-[var(--color-detective-border)] pb-3">
+      <h3 class=" text-base font-bold text-[var(--color-detective-gold)] text-center">
+        {{ mockCaseInfo?.title }}
+      </h3>
+    </div>
+
+    <!-- نص القصة منسق ومتباعد -->
+    <div class="space-y-2">
+      <span class="text-s text-[var(--color-detective-gold)] font-bold block"> Crime Scene Details:</span>
+      <p class="text-s text-[var(--color-detective-text)] leading-relaxed text-justify opacity-90 max-h-[220px] overflow-y-auto pl-1">
+        {{ mockCaseInfo?.storyIntro }}
+      </p>
+    </div>
+
+  </div>
+
+  <!-- ////////////////// -->
+
+
+    </aside>
+
+    <!-- العمود الأوسط (6 أعمدة): الأدلة وشريط التقدم -->
+    <main class="lg:col-span-6 flex flex-col items-center gap-6">
+      
+      <!-- 🔴 1. هنا يوضع كومبوننت شريط التقدم: <app-clue-stepper> -->
+
+        <div class="p-6 max-w-4xl mx-auto space-y-6">
+  <!-- شريط التقدم -->
+  <app-clue-stepper [clues]="testClues"></app-clue-stepper>
+
+  <!-- كروت الأدلة -->
+  <app-clue-viewer 
+    [clues]="testClues" 
+    (clueFlipped)="onClueFlipped($event)">
+  </app-clue-viewer>
+</div>
+
+
+      <!-- 🔴 2. هنا يوضع كومبوننت كروت الأدلة وفك الشفرات: <app-clue-viewer> -->
+
+    </main>
+
+    <!-- العمود الجانبي الثاني (3 أعمدة): قائمة المشتبه بهم -->
+<aside class="lg:col-span-3 border border-[var(--color-detective-border)] p-4 rounded-lg flex flex-col gap-4 min-h-[85vh]">      
+      <div class="flex items-center justify-between ">
+
+
+        <div class="flex items-center justify-center gap-2 mb-4 w-full">
+  <h2 class="text-xl font-extrabold uppercase tracking-wide text-center text-[var(--color-detective-gold)]">
+    Suspects List
+  </h2>
+</div>
+
+
+ </div>
+
+      <!-- قائمة الكروت رأسياً تحت بعض -->
+      <div class="flex flex-col items-center gap-4 max-h-[75vh] overflow-y-auto">
+        <!-- 🔴 هنا تتكرر كروت المشتبه بهم: <app-suspect-card> -->
+          @for (suspect of suspects; track suspect._id) {
+  <app-suspect-card 
+    [suspect]="suspect" 
+    (suspectClicked)="openSuspectModal($event)">
+  </app-suspect-card>
+}
+
+
+
+
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- ================= 3. المودال المنبثق ================= -->
+  <!-- 🔴 هنا يوضع المودال العام <app-modal> لعرض إفادة المشتبه به عند النقر عليه -->
+
+    <!-- المودال: يظهر تلقائياً عند الضغط على أي مشتبه به -->
+
+
+@if (isSuspectModalOpen && selectedSuspect) {
+  <app-modal 
+    [isOpen]="isSuspectModalOpen" 
+    (closeModal)="closeSuspectModal()" 
+    (closeModal)="closeSuspectModal()">
+    
+    <div class="p-6 text-center space-y-4">
+      <img 
+        [src]="selectedSuspect.avatar" 
+        [alt]="selectedSuspect.name"
+        class="w-20 h-20 rounded-full mx-auto border-2 border-[var(--color-detective-gold)] object-cover shadow-[var(--card-shadow)]">
+      
+      <h3 class="text-base font-bold text-[var(--color-detective-text)]">
+        {{ selectedSuspect.name }}
+      </h3>
+
+      <div class="bg-[var(--color-detective-bg)] p-4 rounded-lg border border-[var(--color-detective-border)] text-left">
+        <span class="text-xs text-[var(--color-detective-gold)] font-bold block mb-1">📜 Interrogation Statement:</span>
+        <p class="text-xs text-[var(--color-detective-text)] leading-relaxed">
+          "{{ selectedSuspect.statement }}"
+        </p>
+      </div>
+    </div>
+
+  </app-modal>
+}
+
+</div>

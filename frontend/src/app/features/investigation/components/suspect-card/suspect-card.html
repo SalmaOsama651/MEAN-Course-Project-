@@ -1,0 +1,29 @@
+<div class="suspect-card" [class.victim-card]="isVictim">
+  
+  <!-- Role Badge -->
+  <div class="role-badge">
+    @if (isVictim) {
+      <span class="badge-red">💀 Victim</span>
+    } @else {
+      <span class="badge-gray">🔍 {{ suspect.role === 'witness' ? 'Witness' : 'Suspect' }}</span>
+    }
+  </div>
+
+  <!-- Avatar -->
+  <div class="avatar-wrapper">
+    <img 
+      [src]="suspect.avatar || 'assets/images/default-avatar.png'" 
+      [alt]="suspect.name" 
+      class="avatar-img">
+  </div>
+
+  <!-- Name -->
+  <h4 class="suspect-name">{{ suspect.name }}</h4>
+
+  <!-- Interrogate Button -->
+  @if (!isVictim) {
+    <button type="button" class="btn-question" (click)="onClick()">
+      Examine Suspect
+    </button>
+  }
+</div>

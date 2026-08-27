@@ -1,0 +1,62 @@
+<div class="cards-container">
+  @for (clue of clues; track clue._id; let i = $index) {
+    <div 
+      class="card"
+      (click)="onCardClick(i)"
+      [class.flipped]="clue.isUnlocked"
+      [class.locked]="!clue.isUnlocked && !isClickable(i)">
+      
+      <div class="content">
+        
+        <!-- ظهر الكارت (يظهر قبل الضغط والفتح) -->
+        <div class="back">
+          <div class="back-content">
+            <!-- أيقونة المفتاح -->
+            <div class="key-icon-wrapper">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="48" 
+                height="48" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                stroke-width="1.8" 
+                stroke-linecap="round" 
+                stroke-linejoin="round" 
+                class="lucide lucide-key">
+                <path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4"/>
+                <path d="m21 2-9.6 9.6"/>
+                <circle cx="7.5" cy="15.5" r="5.5"/>
+              </svg>
+            </div>
+
+            <!-- النصوص الإرشادية -->
+            <div class="back-text">
+              <strong class="title-action">CHECK THE CLUE</strong>
+              <span class="status-hint">
+                @if (isClickable(i)) {
+                  🔓 Tap to reveal clue
+                } @else {
+                  🔒 Unlock the {{ i }} clue first 
+                }
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- وجه الكارت (يظهر بعد القلب) -->
+        <div class="front">
+          <div class="front-content">
+            <!-- رقم الدليل في البداية -->
+            <div class="clue-badge">{{ clue.order }}</div>
+
+            <!-- العنوان وتحته المحتوى مباشرة -->
+            <h3 class="clue-title">{{ clue.title }}</h3>
+            <p class="clue-body">{{ clue.content }}</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+</div>
